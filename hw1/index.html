@@ -38,11 +38,6 @@
 
 		Link to GitHub repository: (TODO) <a href="https://github.com/cal-cs184-student/hw1-rasterizer-biba">https://github.com/cal-cs184-student/hw1-rasterizer-biba</a>
 
-		<figure>
-			<img src="lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
-
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
@@ -60,7 +55,31 @@
 		</div>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<p>To implement supersampling, we increased the sampling rate from 1 sample per pixel (used in Task 1) to N samples per pixel, where the subpixel grid has dimension √N × √N. Instead of evaluating coverage once per pixel, we added nested loops to iterate over each subpixel within the original pixel.</p>
+
+		<p>To store these additional samples, we introduced a <code>sample_buffer</code>, which holds multiple color samples per pixel. Its size is <code>width × height × sample_rate</code>. We compute the base index for a pixel using:</p>
+
+		<p style="text-align: center;">
+		<code>base = (y * width + x) * sample_rate</code>
+		</p>
+
+		<p>Each subpixel sample is then accessed using <code>base + s</code>, where <code>s</code> is the subpixel index.</p>
+
+		<p>For each subpixel, we compute its position as:</p>
+
+		<p style="text-align: center;">
+		<code>x + (sx + 0.5) / n</code>, 
+		<code>y + (sy + 0.5) / n</code>
+		</p>
+
+		<p>where <code>n = √sample_rate</code>. We then perform the same inside-triangle test as before to determine coverage. If covered, we shade the subpixel and store the resulting color in <code>sample_buffer[base + s]</code>. In other words, each subpixel is independently tested and shaded.</p>
+
+		<p>After all subpixel samples are computed, we resolve the supersample buffer into the final framebuffer using <code>RasterizerImp::resolve_to_framebuffer()</code>. This function averages the <code>sample_rate</code> samples per pixel (a box filter) and writes the resulting 8-bit per channel color into <code>rgb_framebuffer_target</code>. This averaging step produces smoother edges and reduces aliasing artifacts.</p>
+
+		<p>Several supporting functions were modified to support supersampling. In <code>RasterizerImp::RasterizerImp</code>, we initialize the supersample storage. In <code>set_sample_rate()</code>, we resize <code>sample_buffer</code> when the sampling rate changes. In <code>set_framebuffer_target()</code>, we update width and height and resize the supersample buffer accordingly. We also modified <code>fill_pixel()</code> to ensure points and lines render correctly under supersampling.</p>
+
+		<p>As shown in the results below, increasing the sample rate (e.g., 16 samples per pixel) produces smoother edges with gradual color transitions compared to lower sampling rates such as 4 or 1 sample per pixel. However, higher sample rates require more computation since shading is performed multiple times per pixel.</p>
 
 		<h2>Task 3: Transforms</h2>
 		We wanted the cubeman to do a stretching diamond pose. To achieve this, we rotated both legs outward and then bending the lower segments inward for symmetry. We also changed the cubeman's color to blue. We rotated the full left and right groups at the hips using rotate (70) and rotate(-70) to spread the thigh bars out symmetrically. Then, within each leg group, we bent the lower segment inward using a nested transform. The left shin uses rotate(-95) translate(-30 70) and the right shin uses rotate(95) translate (30 70). 
@@ -71,7 +90,18 @@
 		</div>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<p>Inside a triangle, any point (x, y) can be expressed as a weighted combination of the triangle’s three vertices. If the vertices are A, B, and C, then any point inside the triangle can be written as:</p>
+
+		<p style="text-align: center;"><code>(x, y) = αA + βB + γC</code></p>
+
+		<p>where α, β, and γ are the barycentric coordinates. These weights represent how much influence each vertex has on the point, and they always satisfy:</p>
+
+		<p style="text-align: center;"><code>α + β + γ = 1</code></p>
+
+		<p>Barycentric coordinates can be computed using area ratios. Each weight corresponds to the area of the subtriangle opposite that vertex divided by the total area of the original triangle. In other words, the triangle is partitioned into three smaller subtriangles, and each weight measures how much of the total area belongs to the subtriangle associated with that vertex.</p>
+
+		<p>In the visualization above, one vertex is colored red, one green, and one blue. Because barycentric coordinates act as interpolation weights, the color of any pixel inside the triangle is computed as a weighted combination of the three vertex colors. If a pixel is closer to the red vertex, its α value is larger, so red contributes more to its final color. Similarly, pixels near the green or blue vertices are more influenced by those colors. Near the center of the triangle, the weights are roughly equal (about 1/3 each), producing a smooth blend of red, green, and blue across the triangle.</p>
 
 		<div style="display: flex; justify-content: center; gap: 40px; margin: 20px 0;">
   		<figure>
