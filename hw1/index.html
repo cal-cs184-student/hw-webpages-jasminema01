@@ -28,15 +28,15 @@
 	<body>
 		<div class="container">
 		<h1>CS184/284A Spring 2025 Homework 1 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+		<div style="text-align: center;">Names: Jasmine Ma, Mohan Xu</div>
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to webpage: (TODO) <a href="https://github.com/cal-cs184-student/hw1-rasterizer-biba">https://github.com/cal-cs184-student/hw1-rasterizer-biba</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: (TODO) <a href="https://github.com/cal-cs184-student/hw1-rasterizer-biba">https://github.com/cal-cs184-student/hw1-rasterizer-biba</a>
 
 		<figure>
 			<img src="lion.jpg" alt="Lion" style="width:50%"/>
@@ -48,42 +48,27 @@
 		-->
 
 		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+		Fill this out pls
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		For each triangle polygon, we first compute the boundary this triangle lives in, then set the x_min, x_max, y_min, y_max respectively based on min/max vertex coordinates. Then for every pixel in this clamped box, we determine if it’s inside a triangle using the helper function point in triangle test with x + 0.5 and y + 0.5 as the sampled pixel center. A point would be inside a triangle if all three edge values have the same sign (either positive or negative to handle counter-clock wise and clockwise vertex orders). If it’s inside according to the test, we fill_pixel(x, y, color). 
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+		<p>The algorithm simply uses 3 edge function evaluation (constant per sample), therefore it is no worse than one that checks every sample within a bounding box. </p>
 		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
+			<img src="lion.jpg" width="500px"/>
+  				<figcaption>Caption goes here.</figcaption>
 		</div>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		We wanted the cubeman to do a stretching diamond pose. To achieve this, we rotated both legs outward and then bending the lower segments inward for symmetry. We also changed the cubeman's color to blue. We rotated the full left and right groups at the hips using rotate (70) and rotate(-70) to spread the thigh bars out symmetrically. Then, within each leg group, we bent the lower segment inward using a nested transform. The left shin uses rotate(-95) translate(-30 70) and the right shin uses rotate(95) translate (30 70). 
+
+		<div style="display: flex; flex-direction: column; align-items: center;">
+			<img src="cubeman.png" width="500px"/>
+  				<figcaption>New Cubeman Image</figcaption>
+		</div>
 
 		<h2>Task 4: Barycentric coordinates</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
