@@ -73,25 +73,72 @@
 		<h2>Task 4: Barycentric coordinates</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+		<div style="display: flex; justify-content: center; gap: 40px; margin: 20px 0;">
+  		<figure>
+    		<img src="triangle.png" width="400px"/>
+    			<figcaption>Triangle Image</figcaption>
+  		</figure>
+
+  		<figure>
+    		<img src="circle.png" width="400px"/>
+    			<figcaption>Circle Image (svg/basic/test7.svg)</figcaption>
+  		</figure>
+		</div>
+
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		Pixel sampling can be used to determine what color a screen pixel should receive based on a texture image. Each triangle vertex has a texture coordinate (u,v), and for every rasterized pixel inside the triangle, we use barycentric interpolation to compute the pixel’s corresponding (u,v) coordinate. Once we have that, we sample the texture image at that location to determine the pixel’s color. In our implementation to perform texture mapping, after computing the interpolated texture coordinates for each sample point, we applied either neatest or bilinear sampling depending on the selected pixel sampling mode. For the nearest sampling, we chose the texel closest to the (u,v) location. For bilinear sampling, applied linear interpolation on the four neighboring texels to produce a smoother result. 
+		
+		<p>Nearest sampling chooses the texel closest to the (u,v) coordinate and returns its color directly, which is quite simple and fast, as it only requires one texel lookup, but produces more noticeable aliasing when textures are minified. Bilinear sampling looks at the four texels neighboring the (u,v) coordinate and linearly interpolates between them. It first interpolates horizontally between two pairs of textels, then interpolates vertically between those intermediate results. This produces smoother transitions and reduces jaggedness between texels, but it creates a slight bur and is less cost efficient in computation. </p>
+		
+		<p>The difference between nearest and bilinear sampling is most apparent when texture is magnified, where nearest looks blocky and bilinear looks smooth. When the texture has high-frequency detail, where nearest causes strong aliasing. Overall, bilinear sampling reduces aliasing by smoothing between texels, while nearest sampling keeps the image sharp but intensifies aliasing.</p>
+
+		<div style="display: flex; flex-direction: column; gap: 60px; margin: 40px 0;">
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+    			<img src="nearestbig1.png" width="450px"/>
+    			<img src="nearest1.png" width="250px"/>
+    		<div style="max-width: 300px;">
+      			<b>L_nearest sampling at 1 sample per pixel</b><br>
+      			Edges look jagged and textures are blocky.
+    		</div>
+  		</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   			 <img src="nearestbig16.png.png" width="450px"/>
+    		<img src="nearest16.png" width="250px"/>
+    		<div style="max-width: 300px;">
+      			<b>L_nearest sampling at 16 samples per pixel</b><br>
+      			The edges are more smooth, but texture remains blocky. Texture aliasing is reduced by a slight amount but still noticeable.
+    		</div>
+  		</div>
+
+		</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   			 <img src="bilinearbig1.png" width="450px"/>
+    		<img src="bilinear1.png" width="250px"/>
+    		<div style="max-width: 300px;">
+      			<b>bilinear sampling at 1 sample per pixel</b><br>
+      			Textures are slightly smoother and blockiness is reduced with blur.
+    		</div>
+  		</div>
+
+		</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   			 <img src="bilinearbig16.png" width="450px"/>
+    		<img src="bilinear16.png" width="250px"/>
+    		<div style="max-width: 300px;">
+      			<b>bilinear sampling at 16 samples per pixel</b><br>
+      			This produces the smoothest result overall and the most stable with minimal jaggies.
+    		</div>
+  		</div>
+		
+		</div>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
