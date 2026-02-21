@@ -98,7 +98,7 @@
     			<img src="nearestbig1.png" width="450px"/>
     			<img src="nearest1.png" width="250px"/>
     			<div style="max-width: 300px;">
-      				<b>L_nearest sampling at 1 sample per pixel</b><br>
+      				<b>Nearest sampling at 1 sample per pixel</b><br>
       				Edges look jagged and textures are blocky.
     			</div>
   			</div>
@@ -107,7 +107,7 @@
    			 	<img src="nearestbig16.png" width="450px"/>
     			<img src="nearest16.png" width="250px"/>
     			<div style="max-width: 300px;">
-      				<b>L_nearest sampling at 16 samples per pixel</b><br>
+      				<b>Nearest sampling at 16 samples per pixel</b><br>
       				The edges are more smooth, but texture remains blocky. Texture aliasing is reduced by a slight amount but still noticeable.
     			</div>
   			</div>
@@ -116,7 +116,7 @@
    				<img src="bilinearbig1.png" width="450px"/>
     			<img src="bilinear1.png" width="250px"/>
     			<div style="max-width: 300px;">
-      				<b>bilinear sampling at 1 sample per pixel</b><br>
+      				<b>Bilinear sampling at 1 sample per pixel</b><br>
       				Textures are slightly smoother and blockiness is reduced with blur.
     			</div>
   			</div>
@@ -125,7 +125,7 @@
    				<img src="bilinearbig16.png" width="450px"/>
     			<img src="bilinear16.png" width="250px"/>
     			<div style="max-width: 300px;">
-      				<b>bilinear sampling at 16 samples per pixel</b><br>
+      				<b>Bilinear sampling at 16 samples per pixel</b><br>
       				This produces the smoothest result overall and the most stable with minimal jaggies.
     			</div>
   			</div>
@@ -133,7 +133,67 @@
 		</div>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+		<p><b>Level sampling</b> determines which mipmap resolution to sample from during texture mapping. While pixel sampling (psm) controls how we sample within a mipmap level (nearest or bilinear), level sampling (lsm) controls which mipmap level we use. Instead of sampling only from the full-resolution texture, mipmapping precomputes progressively smaller, prefiltered versions of the texture and selects the level that best matches the screen-space footprint of a pixel. This helps reduce aliasing during minification.</p>
+
+		<p>To compute the appropriate mipmap level, we first interpolate the texture coordinates (u,v) at each sub-sample using barycentric weights. We then compute two additional texture coordinates at neighboring screen positions (x+1, y) and (x, y+1), stored in <code>sp.p_dx_uv</code> and <code>sp.p_dy_uv</code>. In <code>Texture::get_level</code>, we estimate the texture footprint by computing the differences in UV coordinates, scaling them by the full-resolution texture width and height to convert to texel space, and taking the maximum magnitude of the footprint in the x and y directions. The mipmap level is computed as:</p>
+
+		<p style="text-align: center;"><code>D = log2(L)</code></p>
+
+		<p>where L represents the texel footprint size. The resulting level is clamped to the valid mipmap range.</p>
+
+		<p>In <code>Texture::sample</code>, we use this level according to the selected level sampling mode:
+		<ul>
+  		<li><b>L_ZERO:</b> Always sample from mip level 0.</li>
+  		<li><b>L_NEAREST:</b> Round D to the nearest integer mip level.</li>
+  		<li><b>L_LINEAR:</b> Linearly interpolate between the two closest mip levels.</li>
+		</ul>
+		Pixel sampling (nearest or bilinear) is applied independently within the chosen mipmap level, so any combination of psm and lsm works together.</p>
+
+		<h3>Tradeoffs</h3>
+
+		<p><b>Pixel sampling:</b> Nearest sampling is fastest but produces blocky artifacts. Bilinear sampling improves smoothness with a small additional computational cost.</p>
+
+		<p><b>Level sampling (mipmapping):</b> Mipmaps significantly reduce aliasing and moiré patterns during minification by matching texture resolution to pixel footprint. However, they require additional memory to store multiple texture levels and slightly more computation to determine and interpolate between levels.</p>
+
+		<p><b>Increasing samples per pixel (supersampling):</b> Raising the screen-space sampling rate reduces jagged edges and improves overall antialiasing, but it is computationally expensive because shading must be performed multiple times per pixel.</p>
+
+		<p>Overall, mipmapping provides a strong balance between visual quality and efficiency, especially for minified textures, while supersampling offers stronger antialiasing at a higher runtime cost.</p>
+
+
+		<div style="display: flex; flex-direction: column; gap: 60px; margin: 40px 0;">
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+    			<img src="butterfly1.png" width="450px"/>
+    			<img src="butterfly1small.png" width="250px"/>
+    			<div style="max-width: 300px;">
+      				<b>L_ZERO and P_NEAREST</b><br>
+    			</div>
+  			</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   			 	<img src="butterfly2.png" width="450px"/>
+    			<img src="butterfly2small.png" width="250px"/>
+    			<div style="max-width: 300px;">
+      				<b>L_ZERO and P_LINEAR</b><br>
+    			</div>
+  			</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   				<img src="butterfly3.png" width="450px"/>
+    			<img src="butterfly3small.png" width="250px"/>
+    			<div style="max-width: 300px;">
+      				<b>L_NEAREST and P_NEAREST</b><br>
+    			</div>
+  			</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   				<img src="butterdly4.png" width="450px"/>
+    			<img src="butterfly4small.png" width="250px"/>
+    			<div style="max-width: 300px;">
+      				<b>L_NEAREST and P_LINEAR</b><br>
+    			</div>
+  			</div>
 
 		</div>
 	</body>
