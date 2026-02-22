@@ -32,11 +32,11 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cal-cs184-student.github.io/hw-webpages-jasminema01/hw1/index.html">https://cal-cs184-student.github.io/hw-webpages-jasminema01/hw1/index.html</a>
+		Link to webpage:<a href="https://cal-cs184-student.github.io/hw-webpages-jasminema01/hw1/index.html">https://cal-cs184-student.github.io/hw-webpages-jasminema01/hw1/index.html</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://github.com/cal-cs184-student/hw1-rasterizer-biba">https://github.com/cal-cs184-student/hw1-rasterizer-biba</a>
+		Link to GitHub repository:<a href="https://github.com/cal-cs184-student/hw1-rasterizer-biba">https://github.com/cal-cs184-student/hw1-rasterizer-biba</a>
 
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
@@ -144,7 +144,7 @@
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Pixel sampling can be used to determine what color a screen pixel should receive based on a texture image. Each triangle vertex has a texture coordinate (u,v), and for every rasterized pixel inside the triangle, we use barycentric interpolation to compute the pixel’s corresponding (u,v) coordinate. Once we have that, we sample the texture image at that location to determine the pixel’s color. In our implementation to perform texture mapping, after computing the interpolated texture coordinates for each sample point, we applied either neatest or bilinear sampling depending on the selected pixel sampling mode. For the nearest sampling, we chose the texel closest to the (u,v) location. For bilinear sampling, applied linear interpolation on the four neighboring texels to produce a smoother result. 
 		
-		<p>Nearest sampling chooses the texel closest to the (u,v) coordinate and returns its color directly, which is quite simple and fast, as it only requires one texel lookup, but produces more noticeable aliasing when textures are minified. Bilinear sampling looks at the four texels neighboring the (u,v) coordinate and linearly interpolates between them. It first interpolates horizontally between two pairs of textels, then interpolates vertically between those intermediate results. This produces smoother transitions and reduces jaggedness between texels, but it creates a slight bur and is less cost efficient in computation. </p>
+		<p>Nearest sampling chooses the texel closest to the (u,v) coordinate and returns its color directly, which is quite simple and fast, as it only requires one texel lookup, but produces more noticeable aliasing when textures are minified. Bilinear sampling looks at the four texels neighboring the (u,v) coordinate and linearly interpolates between them. It first interpolates horizontally between two pairs of textels, then interpolates vertically between those intermediate results. This produces smoother transitions and reduces jaggedness between texels, but it creates a slight blur and is less cost efficient in computation. </p>
 		
 		<p>The difference between nearest and bilinear sampling is most apparent when texture is magnified, where nearest looks blocky and bilinear looks smooth. When the texture has high-frequency detail, where nearest causes strong aliasing. Overall, bilinear sampling reduces aliasing by smoothing between texels, while nearest sampling keeps the image sharp but intensifies aliasing.</p>
 
