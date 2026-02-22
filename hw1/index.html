@@ -56,30 +56,14 @@
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 
-		<p>To implement supersampling, we increased the sampling rate from 1 sample per pixel (used in Task 1) to N samples per pixel, where the subpixel grid has dimension √N × √N. Instead of evaluating coverage once per pixel, we added nested loops to iterate over each subpixel within the original pixel.</p>
+				</div>
 
-		<p>To store these additional samples, we introduced a <code>sample_buffer</code>, which holds multiple color samples per pixel. Its size is <code>width × height × sample_rate</code>. We compute the base index for a pixel using:</p>
+		<h2>Task 2: Supersampling</h2>
 
-		<p style="text-align: center;">
-		<code>base = (y * width + x) * sample_rate</code>
-		</p>
-
-		<p>Each subpixel sample is then accessed using <code>base + s</code>, where <code>s</code> is the subpixel index.</p>
-
-		<p>For each subpixel, we compute its position as:</p>
-
-		<p style="text-align: center;">
-		<code>x + (sx + 0.5) / n</code>, 
-		<code>y + (sy + 0.5) / n</code>
-		</p>
-
-		<p>where <code>n = √sample_rate</code>. We then perform the same inside-triangle test as before to determine coverage. If covered, we shade the subpixel and store the resulting color in <code>sample_buffer[base + s]</code>. In other words, each subpixel is independently tested and shaded.</p>
-
-		<p>After all subpixel samples are computed, we resolve the supersample buffer into the final framebuffer using <code>RasterizerImp::resolve_to_framebuffer()</code>. This function averages the <code>sample_rate</code> samples per pixel (a box filter) and writes the resulting 8-bit per channel color into <code>rgb_framebuffer_target</code>. This averaging step produces smoother edges and reduces aliasing artifacts.</p>
-
-		<p>Several supporting functions were modified to support supersampling. In <code>RasterizerImp::RasterizerImp</code>, we initialize the supersample storage. In <code>set_sample_rate()</code>, we resize <code>sample_buffer</code> when the sampling rate changes. In <code>set_framebuffer_target()</code>, we update width and height and resize the supersample buffer accordingly. We also modified <code>fill_pixel()</code> to ensure points and lines render correctly under supersampling.</p>
-
-		<p>As shown in the results below, increasing the sample rate (e.g., 16 samples per pixel) produces smoother edges with gradual color transitions compared to lower sampling rates such as 4 or 1 sample per pixel. However, higher sample rates require more computation since shading is performed multiple times per pixel.</p>
+		<p>To supersample, we change the sampling rate of 1 from Task 1 to handling a sampling rate of N (dimension = √N x √N) by adding double for-loops to iterate through these subpixels within the original pixel, as well as introducing the extra data structure <code>sample_buffer</code>, which is a vector that holds the supersamples (multiple color samples per pixel). The allocation size for this buffer is <code>width x height x sample_rate</code>. We index into this buffer using the base index computed as <code>sample_buffer[(y * width + x) * sample_rate]</code>, and each subpixel is accessed via <code>base + s</code>. We compute the pixel center with <code>x + (sx + 0.5) / n</code> and similarly for y, then perform the inside-triangle test to determine coverage. We then write into the correct position in <code>sample_buffer[base + s]</code>. In other words, each subpixel is tested for triangle coverage and then shaded independently.</p>
+		<p>At the end, we convert the supersample buffer into the final framebuffer image through <code>void RasterizerImp::resolve_to_framebuffer()</code>. It computes the average (box filter) color from the <code>sample_rate</code> samples in <code>sample_buffer</code>, then writes this color into <code>rgb_framebuffer_target</code>, which is 8-bit per channel, completing the antialiasing step.</p>
+		<p>Some other functions changed include <code>RasterizerImp::RasterizerImp</code>, where we initialize supersample storage and <code>sample_buffer</code> to hold <code>width * height * sample_rate</code> entries, and <code>RasterizerImp::fill_pixel(...)</code> to ensure points and lines still render correctly. We also modified <code>RasterizerImp::set_sample_rate()</code> to take into consideration changes to the supersampling rate so that updates are reflected and the <code>sample_buffer</code> size is recalculated accordingly. Lastly, we modified <code>RasterizerImp::set_framebuffer_target()</code> to update the rasterizer’s width and height when the framebuffer resolution changes, and to resize the supersample buffer accordingly.</p>
+		<p>Below, we can observe the effects of supersampling, where <code>sample_rate = 16</code> clearly produces edges with more gradience (more samples averaged according to the algorithm), compared to <code>sample_rate = 4</code> and <code>sample_rate = 1</code>.</p>
 
 		<div style="display: flex; flex-direction: column; gap: 60px; margin: 40px 0;">
 
