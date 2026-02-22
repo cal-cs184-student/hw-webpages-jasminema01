@@ -81,6 +81,32 @@
 
 		<p>As shown in the results below, increasing the sample rate (e.g., 16 samples per pixel) produces smoother edges with gradual color transitions compared to lower sampling rates such as 4 or 1 sample per pixel. However, higher sample rates require more computation since shading is performed multiple times per pixel.</p>
 
+		<div style="display: flex; flex-direction: column; gap: 60px; margin: 40px 0;">
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+    			<img src="lion.jpg" width="450px"/>
+    			<div style="max-width: 300px;">
+      				<figcaption>Caption goes here.</figcaption>
+    			</div>
+  			</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   			 	<img src="lion.jpg" width="450px"/>
+    			<div style="max-width: 300px;">
+      				<figcaption>Caption goes here.</figcaption>
+    			</div>
+  			</div>
+
+  			<div style="display: flex; align-items: center; justify-content: center; gap: 40px;">
+   				<img src="lion.jpg" width="450px"/>
+    			<div style="max-width: 300px;">
+      				<figcaption>Caption goes here.</figcaption>
+    			</div>
+  			</div>
+		</div>
+
+			
+
 		<h2>Task 3: Transforms</h2>
 		We wanted the cubeman to do a stretching diamond pose. To achieve this, we rotated both legs outward and then bending the lower segments inward for symmetry. We also changed the cubeman's color to blue. We rotated the full left and right groups at the hips using rotate (70) and rotate(-70) to spread the thigh bars out symmetrically. Then, within each leg group, we bent the lower segment inward using a nested transform. The left shin uses rotate(-95) translate(-30 70) and the right shin uses rotate(95) translate (30 70). 
 
