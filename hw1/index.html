@@ -170,7 +170,7 @@
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 
-		<p><b>Level sampling</b> determines which mipmap resolution to sample from during texture mapping. While pixel sampling (psm) controls how we sample within a mipmap level (nearest or bilinear), level sampling (lsm) controls which mipmap level we use. To dynamically determine resolution based on texture and not just decide on one sample rate, we use mipmaps. This precomputes smaller, pre-filtered versions of the texture, and chooses one that best matches the screen image.</p>
+		To dynamically determine resolution based on texture and not just decide on one sample rate, we use mipmaps. This precomputes smaller, pre-filtered versions of the texture, and chooses one that best matches the screen image.</p>
 
 		<p>First, we compute (u,v) texture coordinates by interpolating vertex UVs using barycentric weights, given a point (x, y) in screen-space. Then, we sample at sub-pixel positions. For each sub sample, we go through the steps of independently computing UVs, derivatives, and sampling the texture to ensure mipmap works per sample (not just per pixel) according to how quickly UV changes on the screen image. We compute two additional texture coordinates at (x + 1, y) and (x, y + 1), stored in <code>SampleParams</code>.</p>
 
