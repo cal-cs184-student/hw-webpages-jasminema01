@@ -43,7 +43,7 @@
 		-->
 
 		<h2>Overview</h2>
-		Fill this out pls
+		In homework 1, we implemented the processes of texture mapping within a rasterization pipeline. Texture mapping allows us to add high-resolution surface detail without raising geometric complexity by mapping a 2D image onto a 3D surface and then into screen space. Texture coordinates (u,v) are assigned at triangle vertices and interpolated across the surface using barycentric coordinates to obtain smoothly varying values per fragment. Since applying textures is “resampling”, differences between screen sampling rate and texture sampling rate can create jaggies and moiré patterns. To address this, we implemented pixel filtering, increasing samples per pixel, and mipmapping with level selection and interpolation, demonstrating how filtering and hierarchical texture representations reduce aliasing with tradeoffs on computational efficiency.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
 		For each triangle polygon, we first compute the boundary this triangle lives in, then set the x_min, x_max, y_min, y_max respectively based on min/max vertex coordinates. Then for every pixel in this clamped box, we determine if it’s inside a triangle using the helper function point in triangle test with x + 0.5 and y + 0.5 as the sampled pixel center. A point would be inside a triangle if all three edge values have the same sign (either positive or negative to handle counter-clock wise and clockwise vertex orders). If it’s inside according to the test, we fill_pixel(x, y, color). 
