@@ -53,44 +53,44 @@
 		<tr>
 		<td>
 		<img src="img1.png" width="300px"/>
-		<figcaption>Caption 1</figcaption>
+		<figcaption>Original 6 control points</figcaption>
 		</td>
 
 		<td>
 		<img src="img2.png" width="300px"/>
-		<figcaption>Caption 2</figcaption>
+		<figcaption>Step 1 Interpolation</figcaption>
 		</td>
 
 		<td>
 		<img src="img3.png" width="300px"/>
-		<figcaption>Caption 3</figcaption>
+		<figcaption>Step 2 Interpolation</figcaption>
 		</td>
 
 		<td>
 		<img src="img4.png" width="300px"/>
-		<figcaption>Caption 4</figcaption>
+		<figcaption>Step 3 Interpolation</figcaption>
 		</td>
 		</tr>
 
 		<tr>
 		<td>
 		<img src="img5.png" width="300px"/>
-		<figcaption>Caption 5</figcaption>
+		<figcaption>Step 4 Interpolation</figcaption>
 		</td>
 
 		<td>
 		<img src="img6.png" width="300px"/>
-		<figcaption>Caption 6</figcaption>
+		<figcaption>Final Evaluated Point</figcaption>
 		</td>
 
 		<td>
 		<img src="img7.png" width="300px"/>
-		<figcaption>Caption 7</figcaption>
+		<figcaption>Bezier Curve</figcaption>
 		</td>
 
 		<td>
 		<img src="img8.png" width="300px"/>
-		<figcaption>Caption 8</figcaption>
+		<figcaption>Modified Control Points & Parameter t</figcaption>
 		</td>
 		</tr>
 
@@ -104,7 +104,7 @@
 
 		<figure>
   		<img src="my_image.png" width="500px"/>
-  		<figcaption>Caption goes here.</figcaption>
+  		<figcaption>bez/teapot.bez</figcaption>
 		</figure>
 
 		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
@@ -120,12 +120,12 @@
 
 		<td style="padding:10px;">
 		<img src="image1.png" width="400px"/>
-		<figcaption>Caption for image 1</figcaption>
+		<figcaption>Without Normalization</figcaption>
 		</td>
 
 		<td style="padding:10px;">
 		<img src="image2.png" width="400px"/>
-		<figcaption>Caption for image 2</figcaption>
+		<figcaption>With Normalization</figcaption>
 		</td>
 
 		</tr>
@@ -139,7 +139,7 @@
 		<figure style="text-align:center;">
   		<img src="debug_output.png" width="500px"/>
  		<figcaption>
-   		Debugging output showing halfedge rewiring information.
+   		We debugged by printing out each halfedge rewires to figure out if any rewiring is wrong
   		</figcaption>
 		</figure>
 
@@ -156,18 +156,6 @@
 		<td>
 		<img src="img2.png" width="350px"/>
 		<figcaption>Caption 2</figcaption>
-		</td>
-		</tr>
-
-		<tr>
-		<td>
-		<img src="img3.png" width="350px"/>
-		<figcaption>Caption 3</figcaption>
-		</td>
-
-		<td>
-		<img src="img4.png" width="350px"/>
-		<figcaption>Caption 4</figcaption>
 		</td>
 		</tr>
 
@@ -191,28 +179,25 @@
 		<!-- 2x2 image table -->
 		<div style="display:flex; justify-content:center;">
 		<table style="text-align:center; border-collapse:collapse;">
+		<p>Cow.dae multiple splits</p>
 
 		<tr>
 		<td>
 		<img src="img1.png" width="350px"/>
-		<figcaption>Caption 1</figcaption>
 		</td>
 
 		<td>
 		<img src="img2.png" width="350px"/>
-		<figcaption>Caption 2</figcaption>
 		</td>
 		</tr>
 
 		<tr>
 		<td>
 		<img src="img3.png" width="350px"/>
-		<figcaption>Caption 3</figcaption>
 		</td>
 
 		<td>
 		<img src="img4.png" width="350px"/>
-		<figcaption>Caption 4</figcaption>
 		</td>
 		</tr>
 
@@ -223,7 +208,7 @@
 		<!-- Single image at the bottom -->
 		<figure style="text-align:center;">
 		<img src="debug.png" width="500px"/>
-		<figcaption>Debugging output showing halfedge rewiring.</figcaption>
+		<figcaption>Combination</figcaption>
 		</figure>
 
 		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
@@ -264,16 +249,27 @@
 
 		<tr>
 		<td>
-		<img src="image1.png" width="400px"/>
-		<figcaption>Caption for image 1</figcaption>
+		<img src="img1.png" width="350px"/>
+		<figcaption>Mesh before loop subdivision</figcaption>
 		</td>
 
 		<td>
-		<img src="image2.png" width="400px"/>
-		<figcaption>Caption for image 2</figcaption>
+		<img src="img2.png" width="350px"/>
+		<figcaption>Mesh after loop subdivision</figcaption>
 		</td>
 		</tr>
 
+		<tr>
+		<td>
+		<img src="img3.png" width="350px"/>
+		<figcaption>Mesh after edge pre-splitting</figcaption>
+		</td>
+
+		<td>
+		<img src="img4.png" width="350px"/>
+		<figcaption>Loop subdivision after pre-split</figcaption>
+		</td>
+		</tr>
 		</table>
 		</div>
 		<p>
@@ -290,12 +286,12 @@
 		<tr>
 		<td>
 		<img src="image1.png" width="400px"/>
-		<figcaption>Caption for image 1</figcaption>
+		<figcaption>Cube after edge flips</figcaption>
 		</td>
 
 		<td>
 		<img src="image2.png" width="400px"/>
-		<figcaption>Caption for image 2</figcaption>
+		<figcaption>Loop subdivision applied after preprocessing</figcaption>
 		</td>
 		</tr>
 
