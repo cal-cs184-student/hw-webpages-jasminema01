@@ -103,7 +103,7 @@
 		<p>For my implementation, I evaluated Bezier surfaces using this two-direction approach.First I implemented <code>evaluateStep</code>, which performs one interpolation step between adjacent 3D points, and <code>evaluate1D</code>, which repeatedly applies that step until only one point remains. Then to evaluate the Bezier surface at \( (u, v) \), I applied <code>evaluate1D</code> to each row of control points using parameter <code>u</code>, which produces one intermediate point per row. Finally, I applied <code>evaluate1D</code> again to those intermediate points using parameter <code>v</code> to obtain the final point on the Bezier surface.</p>
 
 		<figure>
-  		<img src="my_image.png" width="500px"/>
+  		<img src="teapott.png" width="500px"/>
   		<figcaption>bez/teapot.bez</figcaption>
 		</figure>
 
