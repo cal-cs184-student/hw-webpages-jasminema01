@@ -1,116 +1,79 @@
-<html>
-	<head>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-		<style>
-			h1 {
-				text-align: center;
-			}
+<h2>Overview</h2>
+In this homework, I implemented several core geometry processing algorithms used in computer graphics. First, I implemented Bezier curve evaluation using de Casteljau’s algorithm and extended the same recursive interpolation approach to evaluate Bezier surfaces. Next, I worked with the half-edge mesh data structure to compute area-weighted vertex normals and implement mesh editing operations such as edge flipping and edge splitting. Finally, I implemented Loop subdivision, which increases mesh resolution and smooths surfaces by subdividing triangles and updating vertex positions using weighted averages. Through this homework I learned how recursive interpolation works for curves and surfaces, and how mesh connectivity can be manipulated using the half-edge structure to perform local geometry operations and subdivision.
 
-			.container {
-				margin: 0 auto;
-				padding: 60px 20%;
-			}
+<h2>Section I: Bezier Curves and Surfaces</h2>
 
-			figure {
-				text-align: center;
-			}
+<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
+This algorithm evaluates a point on the Bezier curve using repeated linear interpolation between control points. A Bezier curve is seen as a set of control points with a parameter \(t\) ranging from 0 to 1. At each step of the algorithm, new intermediate points are calculated by linearly interpolating between adjacent control points with the formula \( (1-t)p_i + tp_{i+1} \). This outputs a new set of points where the new set has one less element than the previous set. This process is repeated recursively until only one point remains, which is the final evaluated point on the Bezier curve at parameter \(t\).
 
-			img {
-				display: inline-block;
-			}
+For my implementation, I evaluated the Bezier curve by taking the current list of control points and linearly interpolating between each adjacent pair using parameter \(t\), which produces the next set of intermediate control points. I repeated the process recursively until one point remained, which is the evaluated point on the curve.
 
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-		</style>
-	</head>
-	<body>
-		<div class="container">
-		<h1>CS184/284A Spring 2025 Homework 2 Write-Up</h1>
-		<div style="text-align: center;">Names: </div>
+<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
+<div style="display: flex; flex-direction: column; align-items: center;">
+<table style="width: 100%; text-align: center; border-collapse: collapse;">
+<tr>
+<td style="text-align: center;">
+<img src="teapot.png" width="400px"/>
+<figcaption>Caption goes here.</figcaption>
+</td>
+<td style="text-align: center;">
+<img src="teapot.png" width="400px"/>
+<figcaption>Caption goes here.</figcaption>
+</td>
+</tr>
+<tr>
+<td style="text-align: center;">
+<img src="teapot.png" width="400px"/>
+<figcaption>Caption goes here.</figcaption>
+</td>
+<td style="text-align: center;">
+<img src="teapot.png" width="400px"/>
+<figcaption>Caption goes here.</figcaption>
+</td>
+</tr>
+</table>
+</div>
 
-		<br>
+<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
+This algorithm extends from Bezier curves to surfaces by using the same recursive process from Part 1 in two parameters, \(u\) and \(v\). If we want to evaluate a point on a Bezier surface, which is essentially a 2D grid of control points, the algorithm performs interpolation along one direction of the control point grid first, which produces intermediate points, and then applies the same interpolation process along the other direction.
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+For my implementation, I evaluated Bezier surfaces using this two-direction approach. First I implemented <code>evaluateStep</code>, which performs one interpolation step between adjacent 3D points, and <code>evaluate1D</code>, which repeatedly applies that step until only one point remains. Then to evaluate the Bezier surface at \((u,v)\), I applied <code>evaluate1D</code> to each row of control points using \(u\), which produces one intermediate point per row. Finally, I applied <code>evaluate1D</code> again to those intermediate points using \(v\) to get the final point on the Bezier surface.
 
-		<br>
-		
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/sp25">cs184.eecs.berkeley.edu/sp25</a>
+<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
 
-		<figure>
-			<img src="teapot.png" alt="Teapot" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+<h3>Part 3: Area-weighted vertex normals</h3>
+To implement area-weighted vertex normals, we modified <code>Vertex::normal()</code> to compute a smooth normal at a vertex by averaging its neighboring triangles incident to that vertex, weighted by each triangle’s area.
 
-		<!--
-		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
-		-->
+We used the half-edge structure to iterate over all faces adjacent to the current vertex. Starting from <code>halfedge()</code>, we traversed around the vertex with <code>h = h->twin()->next()</code> until returning to the starting half-edge. For each triangle, we collected its three vertex positions using <code>h->vertex()</code>, <code>h->next()->vertex()</code>, and <code>h->next()->next()->vertex()</code>. I summed these neighboring face normals and normalized the result to obtain the final unit vertex normal. This produces smoother Phong shading compared to flat shading.
 
-		<h2>Overview</h2>
-		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
+Without normalization:  
+with normalization:
 
-		<h2>Section I: Bezier Curves and Surfaces</h2>
+<h3>Part 4: Edge flip</h3>
+To implement the flip edge function, we flip the shared edge between two adjacent triangles while preserving the mesh connectivity. We rewire the six halfedges to represent the new pair of triangles formed after replacing the original edge \((b,c)\) with \((a,d)\). This is done by updating each halfedge’s <code>next</code>, <code>twin</code>, <code>vertex</code>, <code>edge</code>, and <code>face</code> pointers using <code>setNeighbors()</code>. We also reset representative half-edge pointers for the affected vertices, edges, and faces to maintain a consistent mesh structure.
 
-		<h3>Part 1: Bezier curves with 1D de Casteljau subdivision</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+We debugged by printing out each halfedge rewiring to check whether any rewiring was incorrect.
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="teapot.png" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+cow multiple flips:
 
-		<h3>Part 2: Bezier surfaces with separable 1D de Casteljau</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h3>Part 5: Edge split</h3>
+To implement <code>splitEdge</code>, we subdivide an edge shared by two adjacent triangles by inserting a new vertex at the midpoint of the edge, then updating the surrounding mesh connectivity. When the original edge connects vertices \((b,c)\) and has triangles \(abc\) and \(cbd\), we insert a new vertex \(m\) at the midpoint of \(b,c\), then replace the original two triangles with four smaller triangles \(abm\), \(amc\), \(dcm\), and \(dmb\).
 
-		<h2>Section II: Triangle Meshes and Half-Edge Data Structure</h2>
+This operation requires modifying the half-edge structure locally. Three new edges and new halfedges are created to form the new triangle boundaries. We then update the connectivity of the halfedges using <code>setNeighbors()</code> to assign each <code>next</code>, <code>twin</code>, <code>vertex</code>, <code>edge</code>, and <code>face</code> pointer so the new faces are formed. We then update surrounding mesh elements to be consistent. The original edge needs to connect the new vertex to the remaining vertices of the surrounding triangles. Representative halfedge pointers for affected vertices, edges, and faces are also reassigned to ensure each element references a valid incident halfedge after the split.
 
-		<h3>Part 3: Area-weighted vertex normals</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Unlike edge flipping in Part 4, this task adds new elements to the mesh. We add one new vertex, three new edges, and two additional faces. The modification remains local to the neighbors of the original edge.
 
-		<h3>Part 4: Edge flip</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Cow.dae multiple splits
 
-		<h3>Part 5: Edge split</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Combination:
 
-		<h3>Part 6: Loop subdivision for mesh upsampling</h3>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+<h3>Part 6: Loop subdivision for mesh upsampling</h3>
+Loop subdivision increases mesh resolution by splitting each triangle into four smaller triangles and updating the vertex positions using weighted averages. I did this by first computing new positions for all the original vertices using the Loop subdivision formula. For each vertex, I found the number of neighboring vertices and calculated a weighted average of the vertex and its neighbors. I stored these values in <code>Vertex::newPosition</code> so that the calculations would still use the original mesh positions. Next, I computed the positions of new vertices that would be created along edges. For each edge shared by two triangles, I used the weighted rule \( \frac{3}{8}(A+B) + \frac{1}{8}(C+D) \) and stored this value in <code>Edge::newPosition</code>. Then I split every original edge using <code>splitEdge</code>, which created the midpoint vertices. After splitting, I flipped any new edge that connected one old vertex and one new vertex to form the correct 4-1 subdivision pattern. Finally, I updated all vertex positions using the stored <code>newPosition</code> values.
 
-		<h2>(Optional) Section III: Potential Extra Credit - Art Competition: Model something Creative</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+One debugging trick I used was printing messages to check that the subdivision function was actually running. I also made sure not to update vertex positions too early, since the formulas must use the original mesh geometry.
 
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
-		</div>
-	</body>
-</html>
+When I performed several iterations of Loop subdivision, sharp edges became smoother. This happens because vertex positions are repeatedly averaged with their neighbors, which gradually removes sharp features and makes the surface rounder. Pre-splitting edges can slightly reduce this smoothing effect because it increases the local resolution of the mesh. With more vertices around a corner, the shape changes more gradually during subdivision.
+
+When I applied Loop subdivision repeatedly to <code>cube.dae</code>, the cube became slightly asymmetric. This happens because each face of the cube is triangulated with diagonals that are not perfectly symmetric. Since Loop subdivision works on triangles, the direction of these diagonals affects how vertices are averaged.
+
+To reduce this effect, I flipped some edges so the triangulation on the cube faces all faced the same way. After this preprocessing, the cube subdivided more symmetrically because the vertex connectivity became more uniform across the mesh.
