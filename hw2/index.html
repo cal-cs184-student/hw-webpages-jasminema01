@@ -135,7 +135,6 @@
 		<h3>Part 4: Edge flip</h3>
 		<p>To implement the flip edge function, we flip the shared edge between two adjacent triangles while preserving the mesh connectivity. We rewire the six halfedges to represent the new pair of triangles formed after replacing the original edge <code>(b, c)</code> with <code>(a, d)</code>. This is done by updating each halfedge’s <code>next</code>, <code>twin</code>, <code>vertex</code>, <code>edge</code>, and <code>face</code> pointers using <code>setNeighbors()</code>. We also reset representative half-edge pointers for the affected vertices, edges, and faces to maintain a consistent mesh structure.</p>
 		
-		<!-- Debugging image -->
 		<figure style="text-align:center;">
   		<img src="debugging.png" width="350px"/>
  		<figcaption>
@@ -176,27 +175,31 @@
 		Unlike edge flipping in Part 4, this operation adds new elements to the mesh. We add one new vertex, three new edges, and two additional faces. The modification remains local to the neighbors of the original edge.
 		</p>
 
-		<!-- 2x2 image table -->
 		<div style="display:flex; justify-content:center;">
-		<table style="text-align:center; border-collapse:collapse;">
-		<p>Cow.dae multiple splits</p>
 
+		<table style="text-align:center; border-collapse:collapse;">
+
+		<tr>
+		<td colspan="2"><b>Cow.dae multiple splits</b></td>
+		</tr>
 
 		<tr>
 		<td>
 		<img src="cow1.png" width="350px"/>
 		</td>
-
 		<td>
 		<img src="cow2.png" width="350px"/>
 		</td>
 		</tr>
 
 		<tr>
+		<td colspan="2"><b>teapot.dae split edge</b></td>
+		</tr>
+
+		<tr>
 		<td>
 		<img src="teapot51.png" width="350px"/>
 		</td>
-
 		<td>
 		<img src="teapot52.png" width="350px"/>
 		</td>
@@ -206,8 +209,6 @@
 
 		</div>
 
-
-		<!-- Single image at the bottom -->
 		<figure style="text-align:center;">
 		<img src="combo.png" width="500px"/>
 		<figcaption>Combination</figcaption>
