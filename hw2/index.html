@@ -226,7 +226,7 @@
 
 		<p>
 		Next, I computed the positions of new vertices that would be created along edges. For each edge shared 
-		by two triangles, I used the weighted rule \( \frac{3}{8}(A+B) + \frac{1}{8}(C+D) \) and stored this 
+		by two triangles, I used the weights given \( \frac{3}{8}(A+B) + \frac{1}{8}(C+D) \) and stored this 
 		value in <code>Edge::newPosition</code>. Then I split every original edge using <code>splitEdge</code>, 
 		which created the midpoint vertices. After splitting, I flipped any new edge that connected one old 
 		vertex and one new vertex to form the correct 4–1 subdivision pattern. Finally, I updated all vertex 
